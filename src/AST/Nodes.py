@@ -3,7 +3,6 @@ from typing import Tuple, Callable, Optional
 
 
 class TreeNode(ABC):
-    """ Базовый класс для всех остальных классов. Используется для вывода дерева в консоль """
     def __init__(self, row: Optional, col: Optional):
         super().__init__()
         self.row = row
@@ -37,32 +36,18 @@ class TreeNode(ABC):
 
 
 class EvalNode(TreeNode):
-    """
-    Класс, от которого наследуются классы,
-    чьи значения можно привести к конкретному цифровому или буквенному значению.
-    """
     pass
 
 
 class ValueNode(EvalNode):
-    """
-    Класс, от которого наследуются классы LitelarNode и IdentNode,
-    то есть те, которые могут содержать какие-либо значения.
-    """
     pass
 
 
 class ExprNode(EvalNode):
-    """
-    Класс, который является родительским для классов, описывающих выражения.
-    """
     pass
 
 
 class LiteralNode(ValueNode):
-    """
-    Класс, содержащий в себе какое-либо значение: число или строку
-    """
     def __init__(self, row, col, value):
         super().__init__(row, col)
         self.value = value
@@ -72,10 +57,7 @@ class LiteralNode(ValueNode):
 
 
 class IdentNode(ValueNode):
-    """
-    Класс, описывающий какой-либо идентификатор, то есть название переменной или функции.
-    """
-    def __init__(self, row, col,  name):
+    def __init__(self, row, col, name):
         super().__init__(row, col)
         self.name = name
 
@@ -84,9 +66,6 @@ class IdentNode(ValueNode):
 
 
 class BinExprNode(ExprNode):
-    """
-    Класс, описывающий бинарное выражение, то есть выражение, имеющее левую и правую часть, и оператор.
-    """
     def __init__(self, row, col, op, left, right):
         super().__init__(row, col)
         self.left = left
@@ -102,10 +81,7 @@ class BinExprNode(ExprNode):
 
 
 class UnaryExprNode(ExprNode):
-    """
-    Класс, описывающий унарное выражение, то есть выражение, имеющее левую часть и оператор.
-    """
-    def __init__(self, row, col,  op, argument):
+    def __init__(self, row, col, op, argument):
         super().__init__(row, col)
         self.op = op
         self.argument = argument
@@ -119,10 +95,7 @@ class UnaryExprNode(ExprNode):
 
 
 class DeclaratorNode(TreeNode):
-    """
-    Класс, описывающий объявление переменной.
-    """
-    def __init__(self, row, col,  ident: IdentNode, init: EvalNode = None):
+    def __init__(self, row, col, ident: IdentNode, init: EvalNode = None):
         super().__init__(row, col)
         self.ident = ident
         self.init = init
@@ -136,10 +109,6 @@ class DeclaratorNode(TreeNode):
 
 
 class VarDeclarationNode(TreeNode):
-    """
-    Класс, описывающий объявления переменных. Содержит переменную declarations,
-    в которой хранится множество с экземплярами класса DeclaratorNode.
-    """
     def __init__(self, row, col, *declarations: DeclaratorNode):
         super().__init__(row, col)
         self.declarations = declarations
@@ -153,10 +122,6 @@ class VarDeclarationNode(TreeNode):
 
 
 class BlockStatementNode(TreeNode):
-    """
-    Класс, содержащий в себе переменную nodes, описывающую множество всех узлов в этом блоке.
-    В нашей реализации вся программа является блоком. Функции, if, for, while и do while также содержат в себе блоки.
-    """
     def __init__(self, row, col, *nodes: TreeNode):
         super().__init__(row, col)
         self.nodes = nodes
@@ -170,9 +135,6 @@ class BlockStatementNode(TreeNode):
 
 
 class ArgsNode(TreeNode):
-    """
-    Класс, описывающий множество аргументов функции.
-    """
     def __init__(self, row, col, *params: Tuple[IdentNode]):
         super().__init__(row, col)
         self.params = params
@@ -182,12 +144,6 @@ class ArgsNode(TreeNode):
 
 
 class FuncDeclarationNode(TreeNode):
-    """
-    Класс, описывающий объявление функции. Содержит переменные ident, params, block.
-    ident - название функции,
-    params - аргументы функции,
-    block - тело функции.
-    """
     def __init__(self, row, col, ident: IdentNode, params: Optional[ArgsNode], block: BlockStatementNode):
         super().__init__(row, col)
         self.ident = ident
@@ -203,12 +159,6 @@ class FuncDeclarationNode(TreeNode):
 
 
 class IfNode(TreeNode):
-    """
-    Класс, описывающий условный оператор if. Содержит переменные test, consequent, alternate.
-    test - выражение, определяющее дальнейшее поведение,
-    consequent - выполняется, если test принял истинное значение,
-    alternate - выполняется, если test принял отрицательное значение.
-    """
     def __init__(self, row, col, test: EvalNode, consequent: BlockStatementNode, alternate: BlockStatementNode = None):
         super().__init__(row, col)
         self.test = test
@@ -224,13 +174,6 @@ class IfNode(TreeNode):
 
 
 class ForNode(TreeNode):
-    """
-    Класс, описывающий цикл for. Содержит переменные init, test, update, block.
-    init - объявление переменной-счётчика,
-    test - выражение, определяющее дальнейшее поведение, т.е. будет ли исполняться код в block,
-    update - обновление значений переменной-счётчика.
-    block - выполняется, если test принял истинное значение.
-    """
     def __init__(self, row, col, init: VarDeclarationNode, test: EvalNode, update: EvalNode, block: BlockStatementNode):
         super().__init__(row, col)
         self.init = init
@@ -247,12 +190,7 @@ class ForNode(TreeNode):
 
 
 class WhileNode(TreeNode):
-    """
-    Класс, описывающий цикл while. Содержит переменные test, block.
-    test - выражение, определяющее дальнейшее поведение, т.е. будет ли исполняться код в block,
-    block - выполняется, если test принял истинное значение.
-    """
-    def __init__(self, row, col,  test: EvalNode, block: BlockStatementNode):
+    def __init__(self, row, col, test: EvalNode, block: BlockStatementNode):
         super().__init__(row, col)
         self.test = test
         self.block = block
@@ -266,12 +204,6 @@ class WhileNode(TreeNode):
 
 
 class DoWhileNode(TreeNode):
-    """
-       Класс, описывающий цикл do while. Содержит переменные test, block.
-       test - выражение, определяющее дальнейшее поведение, т.е. будет ли исполняться код в block,
-       block - выполняется, если test принял истинное значение.
-       Отличие от while в том, что код в block выполнится как минимум однократно.
-       """
     def __init__(self, row, col, block: BlockStatementNode, test: EvalNode):
         super().__init__(row, col)
         self.block = block
@@ -286,9 +218,6 @@ class DoWhileNode(TreeNode):
 
 
 class CallNode(TreeNode):
-    """
-    Класс, описывающий вызов функции. ident - название функции, args - аргументы.
-    """
     def __init__(self, row, col, ident: IdentNode, *args: EvalNode):
         super().__init__(row, col)
         self.ident = ident
@@ -304,9 +233,6 @@ class CallNode(TreeNode):
 
 
 class ReturnNode(TreeNode):
-    """
-    Класс, описывающий оператор return. Переменная argument - возвращаемое значение.
-    """
     def __init__(self, row, col, argument: EvalNode):
         super().__init__(row, col)
         self.argument = argument

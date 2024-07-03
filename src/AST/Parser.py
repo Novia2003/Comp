@@ -7,13 +7,11 @@ from src.AST.Nodes import *
 
 
 class Parser:
-    """ Класс, который используется для парсинга кода. """
     def __init__(self):
         self.grammar = self.__mk_grammar()
         self._locs = []
 
     def __mk_grammar(self):
-        """ Метод, в котором создаётся описание грамматики, вызывается в конструкторе класса Parser. """
         # Описание LiteralNode и IdentNode
         num = ppc.integer() | ppc.real()
         str_ = pp.QuotedString('"', escChar='\\', unquoteResults=True, convertWhitespaceEscapes=False)
@@ -111,7 +109,6 @@ class Parser:
         return block.ignore(pp.cStyleComment).ignore(pp.dblSlashComment) + pp.stringEnd
 
     def __set_parse_action(self, rule_name: str, rule: pp.ParserElement):
-        """ Этот метод задаёт то, какой конструктор вызывается при успешном распознавании правила грамматики. """
         # если rule_name написан КАПСОМ, то никаких действий совершать не нужно,
         # потому что КАПСОМ мы обозначили названия переменных, в которых описываются различные операторы.
         if rule_name == rule_name.upper():
@@ -170,10 +167,6 @@ class Parser:
                     rule.setParseAction(parse_action)
 
     def parse(self, code: str) -> BlockStatementNode:
-        """
-        Функция, принимающая строку,
-        в которой парсер по заданным правилам будет распознавать элементы описанного языка.
-        """
         row, col = 0, 0
         for ch in code:
             if ch == '\n':

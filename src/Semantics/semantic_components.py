@@ -2,13 +2,11 @@ from enum import Enum
 
 
 class LabelType(Enum):
-    """Тип элемента в области видимости."""
     FUNC = "function"
     VAR = "variable"
 
 
 class Label:
-    """Класс, описывающий элемент области видимости."""
     def __init__(self, label_type: LabelType, name, val):
         self.label_type = label_type
         self.name = name
@@ -16,14 +14,12 @@ class Label:
 
 
 class Scope:
-    """Класс, описывающий область видимости."""
     def __init__(self, prev_scope):
         self._labels = []
         self.children_scopes = []
         self.prev_scope = prev_scope
 
     def add_label(self, label: Label, loc):
-        """Этот метод добавляет функцию или переменную."""
         label_names = [lbl.name for lbl in self._labels]
         # Если эл-т не существует в области видимости, мы его добавляем в неё
         if label.name not in label_names:
@@ -40,7 +36,6 @@ class Scope:
                 self._labels[index] = label
 
     def get_label(self, name, loc):
-        """Метод, возвращающий переменную из текущей области видимости или из её родительской области видимости."""
         result = [lbl for lbl in self._labels if lbl.name == name]
         if len(result) > 0:
             # Если переменная или функция с таким именем существует, возвращаем её.

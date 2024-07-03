@@ -10,8 +10,6 @@ builtin_funcs = [f for f in dir(custom_builtins) if inspect.isfunction(getattr(c
 
 
 class Analyzer:
-    """Класс, производящий семантический анализ."""
-
     def __init__(self):
         self.root_scope = Scope(None)
         self.__current_scope = self.root_scope
@@ -21,12 +19,10 @@ class Analyzer:
         self.errors = []
 
     def analyze(self, root_node: TreeNode):
-        """Метод, производящий семантический анализ абстрактного синтаксичесткого дерева."""
         for child in root_node.children:
             self.analyze_node(child)
 
     def analyze_node(self, node):
-        """Метод, производящий семантический анализ узла дерева."""
         try:
             # Проверяем различные типы узлов АСД и проверяем необходимые условия.
             if node.__class__.__name__ in ["VarDeclarationNode"]:

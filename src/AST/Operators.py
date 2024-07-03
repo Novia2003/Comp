@@ -3,9 +3,6 @@ from enum import Enum
 
 
 class Operators(Enum):
-    """
-    Вспомогательный класс, дающий удобный доступ к операторам
-    """
     ADD = '+'
     SUB = '-'
     MUL = '*'
