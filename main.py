@@ -5,12 +5,20 @@ from src.Сompiler.code_generator import *
 from src.VM.VirtualMachine import *
 
 prog = '''
-    var i = 5;
-    do {
-        if(i >= 7)
-            logprint(i);
-        i++;
-    } while(i < 10)
+    function fibonacci(n) {
+        if (n <= 1) {
+            return n;
+        } else {
+            return fibonacci(n - 1) + fibonacci(n - 2);
+        }
+    }
+
+    var i = 0;
+    while (i < 10) {
+        var result = fibonacci(i);
+        logprint(result + 1);
+        i = i + 1;
+    }
 '''
 parser = Parser()
 analyzer = Analyzer()
